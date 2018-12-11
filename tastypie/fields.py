@@ -6,6 +6,15 @@ import re
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.utils import datetime_safe, importlib
 from django.utils import six
+from django.db import models
+try:
+    from django.db.models.fields.related import\
+        SingleRelatedObjectDescriptor as ReverseOneToOneDescriptor
+except ImportError:
+    from django.db.models.fields.related_descriptors import\
+        ReverseOneToOneDescriptor
+from django.utils import datetime_safe, six, encoding
+
 from tastypie.bundle import Bundle
 from tastypie.exceptions import ApiFieldError, NotFound
 from tastypie.utils import dict_strip_unicode_keys, make_aware
@@ -193,7 +202,7 @@ class CharField(ApiField):
         if value is None:
             return None
 
-        return six.text_type(value)
+        return encoding.force_unicode(value)
 
 
 class FileField(ApiField):
